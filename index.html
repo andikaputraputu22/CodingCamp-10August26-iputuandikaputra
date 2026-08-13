@@ -147,12 +147,19 @@
       </div>
 
       <!-- Task stats -->
-      <div class="flex gap-3 mb-3 text-xs text-gray-400">
-        <span id="task-total">0 tasks</span>
-        <span>&middot;</span>
-        <span id="task-done-count">0 done</span>
-        <span>&middot;</span>
-        <span id="task-remaining">0 remaining</span>
+      <div class="flex gap-2 mb-3 flex-wrap">
+        <span class="stat-pill stat-pill--total">
+          <span class="stat-pill__icon">📋</span>
+          <span id="task-total">0 tasks</span>
+        </span>
+        <span class="stat-pill stat-pill--done">
+          <span class="stat-pill__icon">✅</span>
+          <span id="task-done-count">0 done</span>
+        </span>
+        <span class="stat-pill stat-pill--remaining">
+          <span class="stat-pill__icon">⏳</span>
+          <span id="task-remaining">0 remaining</span>
+        </span>
       </div>
 
       <!-- Task list -->

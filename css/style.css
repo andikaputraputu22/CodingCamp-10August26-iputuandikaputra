@@ -531,3 +531,42 @@ body {
   background: #1f2937;
   color: #e5e7eb;
 }
+
+/* ---------- Task Stat Pills ---------- */
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.stat-pill__icon {
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+/* Total — neutral indigo tint */
+.stat-pill--total {
+  background: rgba(79, 70, 229, 0.12);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+/* Done — green tint */
+.stat-pill--done {
+  background: rgba(16, 185, 129, 0.1);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* Remaining — amber tint */
+.stat-pill--remaining {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
