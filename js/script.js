@@ -513,6 +513,9 @@ const DEFAULT_LINKS = [
   { id: generateLinkId(), name: 'Google',   url: 'https://google.com' },
   { id: generateLinkId(), name: 'YouTube',  url: 'https://youtube.com' },
   { id: generateLinkId(), name: 'GitHub',   url: 'https://github.com' },
+  { id: generateLinkId(), name: 'LinkedIn',   url: 'https://linkedin.com' },
+  { id: generateLinkId(), name: 'Instagram',   url: 'https://instagram.com' },
+  { id: generateLinkId(), name: 'Facebook',   url: 'https://facebook.com' },
 ];
 
 let links         = Storage.get(LINKS_KEY, DEFAULT_LINKS);
