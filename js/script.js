@@ -310,10 +310,23 @@ function updateTaskStats() {
   progressBarFill.style.width = `${pct}%`;
 }
 
+// --- Duplicate check ---
+function isDuplicateTask(text, excludeId = null) {
+  const normalized = text.trim().toLowerCase();
+  return tasks.some(t => t.id !== excludeId && t.text.trim().toLowerCase() === normalized);
+}
+
 // --- Actions ---
 function addTask(text) {
   const trimmed = text.trim();
   if (!trimmed) return;
+
+  if (isDuplicateTask(trimmed)) {
+    flashInvalid(taskInput);
+    showAlert('This task already exists.', 'warning');
+    return;
+  }
+
   tasks.unshift({ id: generateId(), text: trimmed, done: false });
   saveTasks();
   renderTasks();
@@ -346,6 +359,13 @@ function openEditModal(id) {
 function saveEditTask() {
   const trimmed = editTaskInput.value.trim();
   if (!trimmed) return;
+
+  if (isDuplicateTask(trimmed, editingTaskId)) {
+    flashInvalid(editTaskInput);
+    showAlert('⚠️ A task with this name already exists.', 'warning');
+    return;
+  }
+
   const task = tasks.find(t => t.id === editingTaskId);
   if (task) {
     task.text = trimmed;
@@ -602,3 +622,47 @@ function flashInvalid(el) {
   el.focus();
   setTimeout(() => { el.style.borderColor = ''; }, 1200);
 }
+
+// ─── Custom Alert ────────────────────────────
+const alertEl      = document.getElementById('custom-alert');
+const alertMsgEl   = document.getElementById('custom-alert-message');
+const alertCloseEl = document.getElementById('custom-alert-close');
+let   alertTimer   = null;
+
+/**
+ * Show the custom alert banner.
+ * @param {string} message  Text to display.
+ * @param {'warning'|'error'} [type='warning']
+ * @param {number} [duration=4000]  Auto-hide delay in ms (0 = no auto-hide).
+ */
+function showAlert(message, type = 'warning', duration = 4000) {
+  // Reset state
+  clearTimeout(alertTimer);
+  alertEl.classList.remove('hidden', 'show', 'alert-error');
+
+  if (type === 'error') alertEl.classList.add('alert-error');
+
+  alertMsgEl.textContent = message;
+
+  // Trigger transition on next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => alertEl.classList.add('show'));
+  });
+
+  if (duration > 0) {
+    alertTimer = setTimeout(hideAlert, duration);
+  }
+}
+
+function hideAlert() {
+  alertEl.classList.remove('show');
+  // After transition, fully hide so it doesn't block pointer events
+  alertEl.addEventListener('transitionend', () => {
+    alertEl.classList.add('hidden');
+  }, { once: true });
+}
+
+alertCloseEl.addEventListener('click', () => {
+  clearTimeout(alertTimer);
+  hideAlert();
+});
