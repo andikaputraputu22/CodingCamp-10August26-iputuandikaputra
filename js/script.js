@@ -256,6 +256,44 @@ const editCancelBtn  = document.getElementById('edit-cancel-btn');
 let tasks         = Storage.get(TASKS_KEY, []);
 let editingTaskId = null;
 
+// --- Sort state ---
+const SORT_KEY    = 'dashboard_tasks_sort';
+let   currentSort = Storage.get(SORT_KEY, 'default');  // 'default' | 'az' | 'za' | 'active-first' | 'done-first'
+
+const sortSelect = document.getElementById('sort-select');
+
+// Set dropdown to stored preference on load
+sortSelect.value = currentSort;
+
+function applySort(arr) {
+  // Always work on a shallow copy so the original insertion order in `tasks` is preserved
+  const copy = [...arr];
+  switch (currentSort) {
+    case 'az':
+      copy.sort((a, b) => a.text.localeCompare(b.text));
+      break;
+    case 'za':
+      copy.sort((a, b) => b.text.localeCompare(a.text));
+      break;
+    case 'active-first':
+      copy.sort((a, b) => Number(a.done) - Number(b.done));
+      break;
+    case 'done-first':
+      copy.sort((a, b) => Number(b.done) - Number(a.done));
+      break;
+    default:
+      // 'default' — preserve insertion order (newest first, as tasks are unshifted)
+      break;
+  }
+  return copy;
+}
+
+sortSelect.addEventListener('change', () => {
+  currentSort = sortSelect.value;
+  Storage.set(SORT_KEY, currentSort);
+  renderTasks();
+});
+
 // --- Utilities ---
 function generateId() {
   return `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -275,7 +313,9 @@ function renderTasks() {
     taskEmpty.classList.add('hidden');
   }
 
-  tasks.forEach(task => {
+  const sorted = applySort(tasks);
+
+  sorted.forEach(task => {
     const li = document.createElement('li');
     li.className = `task-item fade-in${task.done ? ' done' : ''}`;
     li.dataset.id = task.id;
@@ -362,7 +402,7 @@ function saveEditTask() {
 
   if (isDuplicateTask(trimmed, editingTaskId)) {
     flashInvalid(editTaskInput);
-    showAlert('⚠️ A task with this name already exists.', 'warning');
+    showAlert('A task with this name already exists.', 'warning');
     return;
   }
 

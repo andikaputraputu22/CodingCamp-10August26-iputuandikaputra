@@ -98,6 +98,18 @@
         <div id="progress-bar-fill" class="progress-bar-fill" style="width:0%"></div>
       </div>
 
+      <!-- Sort controls -->
+      <div class="flex items-center gap-2 mb-3">
+        <label for="sort-select" class="text-xs text-gray-500 whitespace-nowrap">Sort:</label>
+        <select id="sort-select" class="sort-select">
+          <option value="default">Default</option>
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+          <option value="active-first">Active first</option>
+          <option value="done-first">Done first</option>
+        </select>
+      </div>
+
       <!-- Task stats -->
       <div class="flex gap-3 mb-3 text-xs text-gray-400">
         <span id="task-total">0 tasks</span>
