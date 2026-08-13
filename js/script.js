@@ -108,18 +108,25 @@ setInterval(updateClock, 1000);
 // ─────────────────────────────────────────────
 // 2. FOCUS TIMER
 // ─────────────────────────────────────────────
-const TIMER_MINUTES   = 25;
-const TIMER_TOTAL_SEC = TIMER_MINUTES * 60;
+const DEFAULT_TIMER_MINUTES = 25;
 
-const timerDisplay = document.getElementById('timer-display');
-const timerStatus  = document.getElementById('timer-status');
-const btnStart     = document.getElementById('timer-start');
-const btnStop      = document.getElementById('timer-stop');
-const btnReset     = document.getElementById('timer-reset');
+const timerDisplay      = document.getElementById('timer-display');
+const timerStatus       = document.getElementById('timer-status');
+const timerMinutesInput = document.getElementById('timer-minutes-input');
+const timerSetBtn       = document.getElementById('timer-set-btn');
+const btnStart          = document.getElementById('timer-start');
+const btnStop           = document.getElementById('timer-stop');
+const btnReset          = document.getElementById('timer-reset');
 
-let timerRemaining = TIMER_TOTAL_SEC;
-let timerInterval  = null;
-let timerRunning   = false;
+// Load last-used duration from storage (fallback 25 min)
+let timerSetMinutes = Storage.get('dashboard_timer_minutes', DEFAULT_TIMER_MINUTES);
+let timerTotalSec   = timerSetMinutes * 60;
+let timerRemaining  = timerTotalSec;
+let timerInterval   = null;
+let timerRunning    = false;
+
+// Sync input to stored value on load
+timerMinutesInput.value = timerSetMinutes;
 
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -137,6 +144,13 @@ function setTimerState(state) {
   if (state === 'running')  timerDisplay.classList.add('running');
   if (state === 'finished') timerDisplay.classList.add('finished');
 
+  // Disable duration input while running
+  const canEdit = state === 'idle' || state === 'finished';
+  timerMinutesInput.disabled = !canEdit;
+  timerSetBtn.disabled       = !canEdit;
+  timerMinutesInput.style.opacity = canEdit ? '1' : '0.4';
+  timerSetBtn.style.opacity       = canEdit ? '1' : '0.4';
+
   const statusMap = {
     idle:     'Ready to focus',
     running:  '🔥 Focusing…',
@@ -144,6 +158,24 @@ function setTimerState(state) {
     finished: '🎉 Session complete! Great work!',
   };
   timerStatus.textContent = statusMap[state] || '';
+}
+
+/** Parse and apply the minutes input as the new timer duration */
+function applyCustomDuration() {
+  const raw = parseInt(timerMinutesInput.value, 10);
+  if (isNaN(raw) || raw < 1) {
+    flashInvalid(timerMinutesInput);
+    timerMinutesInput.value = timerSetMinutes;
+    return;
+  }
+  const clamped = Math.min(Math.max(raw, 1), 120);
+  timerSetMinutes = clamped;
+  timerTotalSec   = clamped * 60;
+  timerRemaining  = timerTotalSec;
+  timerMinutesInput.value = clamped;
+  Storage.set('dashboard_timer_minutes', timerSetMinutes);
+  renderTimer();
+  setTimerState('idle');
 }
 
 function startTimer() {
@@ -159,11 +191,9 @@ function startTimer() {
       clearInterval(timerInterval);
       timerRunning = false;
       setTimerState('finished');
-      // Browser notification (if permitted)
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('Focus session complete! 🎉', {
-          body: 'Take a 5-minute break.',
-          icon: '',
+          body: `${timerSetMinutes}-minute session done. Take a break!`,
         });
       }
     }
@@ -180,10 +210,15 @@ function pauseTimer() {
 function resetTimer() {
   clearInterval(timerInterval);
   timerRunning   = false;
-  timerRemaining = TIMER_TOTAL_SEC;
+  timerRemaining = timerTotalSec;
   renderTimer();
   setTimerState('idle');
 }
+
+timerSetBtn.addEventListener('click', applyCustomDuration);
+timerMinutesInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') applyCustomDuration();
+});
 
 btnStart.addEventListener('click', startTimer);
 btnStop.addEventListener('click', pauseTimer);

@@ -46,6 +46,22 @@
         <h2 class="section-title">Focus Timer</h2>
       </div>
       <div class="flex flex-col items-center gap-4">
+
+        <!-- Duration setter -->
+        <div class="flex items-center gap-2">
+          <label for="timer-minutes-input" class="text-xs text-gray-400 whitespace-nowrap">Duration (min)</label>
+          <input
+            id="timer-minutes-input"
+            type="number"
+            min="1"
+            max="120"
+            value="25"
+            class="input-field w-20 text-center text-sm"
+            title="Set timer duration in minutes"
+          />
+          <button id="timer-set-btn" class="btn-ghost text-xs px-3">Set</button>
+        </div>
+
         <div id="timer-display" class="text-6xl font-bold tabular-nums text-white timer-ring px-8 py-4 rounded-2xl">
           25:00
         </div>
