@@ -27,6 +27,34 @@ const Storage = {
 };
 
 // ─────────────────────────────────────────────
+// 0. THEME TOGGLE
+// ─────────────────────────────────────────────
+const THEME_KEY        = 'dashboard_theme';
+const themeToggleBtn   = document.getElementById('theme-toggle-btn');
+const themeIcon        = document.getElementById('theme-icon');
+
+function getStoredTheme() {
+  return Storage.get(THEME_KEY, 'dark');
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+  themeToggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  themeToggleBtn.setAttribute('title',      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  Storage.set(THEME_KEY, theme);
+}
+
+// Apply on load (the inline <script> in <head> already sets data-theme,
+// this call syncs the button icon without waiting for DOMContentLoaded)
+applyTheme(getStoredTheme());
+
+themeToggleBtn.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ─────────────────────────────────────────────
 // 1. GREETING & CLOCK
 // ─────────────────────────────────────────────
 const NAME_KEY      = 'dashboard_user_name';
