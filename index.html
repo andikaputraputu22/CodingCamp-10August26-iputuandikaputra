@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100 font-sans">
+
+  <!-- ===== HEADER: Greeting & Clock ===== -->
+  <header class="w-full px-4 pt-8 pb-4 text-center">
+    <p id="greeting" class="text-lg text-indigo-400 font-medium tracking-wide"></p>
+    <h1 id="clock" class="text-5xl sm:text-7xl font-bold tabular-nums mt-1 text-white drop-shadow-lg"></h1>
+    <p id="date-display" class="text-sm text-gray-400 mt-2"></p>
+  </header>
+
+  <!-- ===== MAIN GRID ===== -->
+  <main class="max-w-5xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+    <!-- ===== FOCUS TIMER ===== -->
+    <section class="card col-span-1">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl">🍅</span>
+        <h2 class="section-title">Focus Timer</h2>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div id="timer-display" class="text-6xl font-bold tabular-nums text-white timer-ring px-8 py-4 rounded-2xl">
+          25:00
+        </div>
+        <div class="flex gap-3 flex-wrap justify-center">
+          <button id="timer-start" class="btn-primary">&#9654; Start</button>
+          <button id="timer-stop" class="btn-secondary">&#9646;&#9646; Pause</button>
+          <button id="timer-reset" class="btn-ghost">&#8635; Reset</button>
+        </div>
+        <p id="timer-status" class="text-sm text-gray-400">Ready to focus</p>
+      </div>
+    </section>
+
+    <!-- ===== TO-DO LIST ===== -->
+    <section class="card col-span-1 md:row-span-2 flex flex-col">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl">&#9989;</span>
+        <h2 class="section-title">To-Do List</h2>
+      </div>
+
+      <!-- Add task form -->
+      <div class="flex gap-2 mb-3">
+        <input
+          id="task-input"
+          type="text"
+          placeholder="Add a new task..."
+          class="input-field flex-1"
+          maxlength="120"
+        />
+        <button id="task-add-btn" class="btn-primary px-4">Add</button>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar-track">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width:0%"></div>
+      </div>
+
+      <!-- Task stats -->
+      <div class="flex gap-3 mb-3 text-xs text-gray-400">
+        <span id="task-total">0 tasks</span>
+        <span>&middot;</span>
+        <span id="task-done-count">0 done</span>
+        <span>&middot;</span>
+        <span id="task-remaining">0 remaining</span>
+      </div>
+
+      <!-- Task list -->
+      <ul id="task-list" class="flex flex-col gap-2 overflow-y-auto flex-1 max-h-72 pr-1"></ul>
+      <p id="task-empty" class="text-center text-gray-500 text-sm mt-6 hidden">No tasks yet. Add one above!</p>
+    </section>
+
+    <!-- ===== QUICK LINKS ===== -->
+    <section class="card col-span-1 flex flex-col">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl">&#128279;</span>
+        <h2 class="section-title">Quick Links</h2>
+      </div>
+
+      <!-- Add link form -->
+      <div class="flex flex-col gap-2 mb-4">
+        <div class="flex gap-2">
+          <input
+            id="link-name-input"
+            type="text"
+            placeholder="Label (e.g. GitHub)"
+            class="input-field"
+            maxlength="30"
+          />
+          <input
+            id="link-url-input"
+            type="url"
+            placeholder="https://..."
+            class="input-field"
+            maxlength="200"
+          />
+        </div>
+        <button id="link-add-btn" class="btn-primary self-end px-5">+ Add Link</button>
+      </div>
+
+      <!-- Links grid -->
+      <div id="links-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+      <p id="links-empty" class="text-center text-gray-500 text-sm mt-4 hidden">No links yet. Add your favorites!</p>
+    </section>
+
+  </main>
+
+  <!-- ===== EDIT TASK MODAL ===== -->
+  <div id="edit-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h3 class="text-lg font-semibold mb-3 text-white">Edit Task</h3>
+      <input id="edit-task-input" type="text" class="input-field w-full mb-4" maxlength="120" />
+      <div class="flex justify-end gap-2">
+        <button id="edit-cancel-btn" class="btn-ghost">Cancel</button>
+        <button id="edit-save-btn" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EDIT LINK MODAL ===== -->
+  <div id="edit-link-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h3 class="text-lg font-semibold mb-3 text-white">Edit Link</h3>
+      <input id="edit-link-name-input" type="text" class="input-field w-full mb-2" placeholder="Label" maxlength="30" />
+      <input id="edit-link-url-input" type="url" class="input-field w-full mb-4" placeholder="https://..." maxlength="200" />
+      <div class="flex justify-end gap-2">
+        <button id="edit-link-cancel-btn" class="btn-ghost">Cancel</button>
+        <button id="edit-link-save-btn" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
