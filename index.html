@@ -11,7 +11,27 @@
 
   <!-- ===== HEADER: Greeting & Clock ===== -->
   <header class="w-full px-4 pt-8 pb-4 text-center">
-    <p id="greeting" class="text-lg text-indigo-400 font-medium tracking-wide"></p>
+    <!-- Greeting row: text + edit button, toggled with inline name input -->
+    <div class="flex items-center justify-center gap-2">
+      <p id="greeting" class="text-lg text-indigo-400 font-medium tracking-wide"></p>
+      <button id="greeting-edit-btn" class="greeting-edit-btn" title="Change your name" aria-label="Edit name">
+        ✏️
+      </button>
+    </div>
+
+    <!-- Inline name editor (hidden by default) -->
+    <div id="greeting-name-editor" class="hidden flex items-center justify-center gap-2 mt-2">
+      <input
+        id="greeting-name-input"
+        type="text"
+        placeholder="Your name…"
+        maxlength="40"
+        class="input-field text-center w-48"
+      />
+      <button id="greeting-name-save" class="btn-primary px-3 py-1.5 text-sm">Save</button>
+      <button id="greeting-name-cancel" class="btn-ghost px-3 py-1.5 text-sm">Cancel</button>
+    </div>
+
     <h1 id="clock" class="text-5xl sm:text-7xl font-bold tabular-nums mt-1 text-white drop-shadow-lg"></h1>
     <p id="date-display" class="text-sm text-gray-400 mt-2"></p>
   </header>

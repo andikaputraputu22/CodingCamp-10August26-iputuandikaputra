@@ -29,15 +29,29 @@ const Storage = {
 // ─────────────────────────────────────────────
 // 1. GREETING & CLOCK
 // ─────────────────────────────────────────────
-const clockEl       = document.getElementById('clock');
-const greetingEl    = document.getElementById('greeting');
-const dateDisplayEl = document.getElementById('date-display');
+const NAME_KEY      = 'dashboard_user_name';
 
-function getGreeting(hour) {
+const clockEl            = document.getElementById('clock');
+const greetingEl         = document.getElementById('greeting');
+const dateDisplayEl      = document.getElementById('date-display');
+const greetingEditBtn    = document.getElementById('greeting-edit-btn');
+const greetingNameEditor = document.getElementById('greeting-name-editor');
+const greetingNameInput  = document.getElementById('greeting-name-input');
+const greetingNameSave   = document.getElementById('greeting-name-save');
+const greetingNameCancel = document.getElementById('greeting-name-cancel');
+
+let userName = Storage.get(NAME_KEY, '');
+
+function getGreetingPhrase(hour) {
   if (hour >= 5  && hour < 12) return '🌅 Good morning';
   if (hour >= 12 && hour < 17) return '☀️ Good afternoon';
   if (hour >= 17 && hour < 21) return '🌆 Good evening';
   return '🌙 Good night';
+}
+
+function buildGreeting(hour) {
+  const phrase = getGreetingPhrase(hour);
+  return userName ? `${phrase}, ${userName}!` : `${phrase}!`;
 }
 
 function updateClock() {
@@ -47,7 +61,7 @@ function updateClock() {
   const s    = String(now.getSeconds()).padStart(2, '0');
 
   clockEl.textContent    = `${h}:${m}:${s}`;
-  greetingEl.textContent = getGreeting(now.getHours());
+  greetingEl.textContent = buildGreeting(now.getHours());
 
   dateDisplayEl.textContent = now.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -56,6 +70,36 @@ function updateClock() {
     day:     'numeric',
   });
 }
+
+// --- Name editor ---
+function openNameEditor() {
+  greetingNameInput.value = userName;
+  greetingNameEditor.classList.remove('hidden');
+  greetingEditBtn.classList.add('hidden');
+  greetingNameInput.focus();
+  greetingNameInput.select();
+}
+
+function closeNameEditor() {
+  greetingNameEditor.classList.add('hidden');
+  greetingEditBtn.classList.remove('hidden');
+}
+
+function saveUserName() {
+  const trimmed = greetingNameInput.value.trim();
+  userName = trimmed;
+  Storage.set(NAME_KEY, userName);
+  updateClock();          // refresh greeting text immediately
+  closeNameEditor();
+}
+
+greetingEditBtn.addEventListener('click', openNameEditor);
+greetingNameSave.addEventListener('click', saveUserName);
+greetingNameCancel.addEventListener('click', closeNameEditor);
+greetingNameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter')  saveUserName();
+  if (e.key === 'Escape') closeNameEditor();
+});
 
 updateClock();
 setInterval(updateClock, 1000);

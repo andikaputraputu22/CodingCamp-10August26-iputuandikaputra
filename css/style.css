@@ -3,6 +3,24 @@
    Complements Tailwind CSS utility classes
    ============================================= */
 
+/* ---------- Greeting Edit Button ---------- */
+.greeting-edit-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  color: #6b7280;
+  line-height: 1;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.greeting-edit-btn:hover {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.1);
+}
+
 /* ---------- Base ---------- */
 *, *::before, *::after {
   box-sizing: border-box;
