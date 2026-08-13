@@ -470,6 +470,10 @@ const linkAddBtn        = document.getElementById('link-add-btn');
 const linksGrid         = document.getElementById('links-grid');
 const linksEmpty        = document.getElementById('links-empty');
 
+const addLinkToggleBtn  = document.getElementById('add-link-toggle-btn');
+const addLinkForm       = document.getElementById('add-link-form');
+const addLinkCancelBtn  = document.getElementById('add-link-cancel-btn');
+
 const editLinkModal      = document.getElementById('edit-link-modal');
 const editLinkNameInput  = document.getElementById('edit-link-name-input');
 const editLinkUrlInput   = document.getElementById('edit-link-url-input');
@@ -606,17 +610,30 @@ linksGrid.addEventListener('click', e => {
   if (action === 'delete-link') deleteLink(id);
 });
 
+// --- Toggle add-link form ---
+addLinkToggleBtn.addEventListener('click', () => {
+  addLinkForm.classList.remove('hidden');
+  addLinkToggleBtn.classList.add('hidden');
+  linkNameInput.focus();
+});
+
+function closeAddLinkForm() {
+  addLinkForm.classList.add('hidden');
+  addLinkToggleBtn.classList.remove('hidden');
+  linkNameInput.value = '';
+  linkUrlInput.value  = '';
+}
+
+addLinkCancelBtn.addEventListener('click', closeAddLinkForm);
+
 linkAddBtn.addEventListener('click', () => {
   const ok = addLink(linkNameInput.value, linkUrlInput.value);
-  if (ok) {
-    linkNameInput.value = '';
-    linkUrlInput.value  = '';
-    linkNameInput.focus();
-  }
+  if (ok) closeAddLinkForm();
 });
 
 linkUrlInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') linkAddBtn.click();
+  if (e.key === 'Enter')  linkAddBtn.click();
+  if (e.key === 'Escape') closeAddLinkForm();
 });
 
 editLinkSaveBtn.addEventListener('click', saveEditLink);
